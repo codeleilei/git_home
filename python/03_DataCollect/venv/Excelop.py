@@ -17,7 +17,7 @@ class Excelop:
         self.wb.save(self.filename)
 
     def read(self,row,col):
-        return self.sh.cell(row = row,column = col)
+        return self.sh.cell(row = row,column = col).value
 
     def write(self,row,col,data):
         self.sh.cell(row = row,column = col,value = data)
@@ -39,9 +39,9 @@ class Excelop:
         return d
 
 
-    def Write_data_save(self,row,data):
-        self.write(row,12,data)
+    def Write_data_save(self,row,col,data):
+        self.write(row,col,data)
         self.save()
 
-    def Write_data(self,data,row):
-        self.write(row, 12, data)
+    def Write_data(self,data,col,row):
+        self.write(row,col, data)

@@ -6,7 +6,18 @@ from selenium.webdriver.support.ui import Select
 import time
 
 
-
+rateYaer={
+    '2009':6.8367,
+    '2010':6.8281,
+    '2011':6.6215,
+    '2012':6.3001,
+    '2013':6.2897,
+    '2014':6.1428,
+    '2015':6.2284,
+    '2016':6.6423,
+    '2017':6.7518,
+    '2018':6.6174,
+}
 
 def login():
     browser.get("http://data-cnki-net.wvpn.ncu.edu.cn/")
@@ -57,7 +68,7 @@ def Find_key():
     #td[6]是要的数值  td[5]是关键字名称
     # 获取table的行数
     while(1):
-        time.sleep(2)
+        time.sleep(1)
         data = 0.0
         rowCount = len(browser.find_elements_by_xpath('//*[@id="t1"]/tbody/tr'))
         # 获取第三列的每一行的值
@@ -78,28 +89,39 @@ def Find_key():
     print(data)
     return data
 
-
-def main():
-
-    print("lovo u python")
-    login()
-    #name=input("input name:")
-    #place = input("input place:")
-    #time = input("input time:")
-
-    #search("外商直接投资额", "新疆", "2019")
-    mExcel=Excelop(r'C:\Users\18136\Desktop\11.xlsx',"2009-2018",0)
-    d= mExcel.Get_dict()
+def Rate_Year():
+    print("set rate of excel")
     i=0
-    for Year in range(2009,2019+1):
+    for Year in range(2009,2019):
+        rate=rateYaer.get(str(Year))
+        for key in d:
+            data=float(mExcel.read(int(d.get(key))+i,14))*rate
+            mExcel.Write_data_save(int(d.get(key))+i,16,str(data))
+        i=i+1
+
+
+def Get_data():
+    print("get data from net")
+    login()
+    i=0
+    for Year in range(2009,2019):
         for key in d:
             data=float(search(key,str(Year)))
-            mExcel.Write_data_save(int(d.get(key))+i,str(data))
+            mExcel.Write_data_save(int(d.get(key))+i,12,str(data))
         i=i+1
-    #mExcel.save()
+
+
+
 
 if __name__ == '__main__':
     SearchKey="外商直接投资额"
-    browser = webdriver.Chrome()
-    main()
+    #init webdriver
+    #@browser = webdriver.Chrome()
 
+    #init escel
+    mExcel=Excelop(r'C:\Users\18136\Desktop\11.xlsx',"2009-2018",0)
+    d= mExcel.Get_dict()
+
+    #run
+    #Get_data()
+    Rate_Year()
